@@ -64,6 +64,26 @@ static void MX_GPIO_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+  // LED INITIALIZATION
+  GPIO_TypeDef *J1_MANCHE_1_PORT = GPIOC;
+  uint16_t J1_MANCHE_1_PIN = GPIO_PIN_0;
+
+  GPIO_TypeDef *J1_MANCHE_2_PORT = GPIOA;
+  uint16_t J1_MANCHE_2_PIN = GPIO_PIN_4;
+
+  GPIO_TypeDef *J2_MANCHE_1_PORT = GPIOC;
+  uint16_t J2_MANCHE_1_PIN = GPIO_PIN_1;
+
+  GPIO_TypeDef *J2_MANCHE_2_PORT = GPIOB;
+  uint16_t J2_MANCHE_2_PIN = GPIO_PIN_0;
+
+  // BUTTON INITIALISATION
+  GPIO_TypeDef *J1_BUTTON_PORT = GPIOB;
+  uint16_t J1_BUTTON_PIN = GPIO_PIN_3;
+
+  GPIO_TypeDef *J2_BUTTON_PORT = GPIOA;
+  uint16_t J2_BUTTON_PIN = GPIO_PIN_10;
+
 
   /* USER CODE END 1 */
 
@@ -96,21 +116,10 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    GPIO_TypeDef *J1_MANCHE_1_PORT = GPIOC;
-    uint16_t J1_MANCHE_1_PIN = GPIO_PIN_0;
-
-    GPIO_TypeDef *J1_MANCHE_2_PORT = GPIOA;
-    uint16_t J1_MANCHE_2_PIN = GPIO_PIN_4;
-
-    GPIO_TypeDef *J2_MANCHE_1_PORT = GPIOC;
-    uint16_t J2_MANCHE_1_PIN = GPIO_PIN_1;
-
-    GPIO_TypeDef *J2_MANCHE_2_PORT = GPIOB;
-    uint16_t J2_MANCHE_2_PIN = GPIO_PIN_0;
 
 
-
-    if(HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_13) == GPIO_PIN_SET)
+    
+    if(HAL_GPIO_ReadPin(J1_BUTTON_PORT,J1_BUTTON_PIN) == GPIO_PIN_SET)
     {
        HAL_GPIO_WritePin(J1_MANCHE_1_PORT, J1_MANCHE_1_PIN, GPIO_PIN_RESET);
        HAL_GPIO_WritePin(J1_MANCHE_2_PORT, J1_MANCHE_2_PIN, GPIO_PIN_RESET);
@@ -121,7 +130,7 @@ int main(void)
       HAL_GPIO_WritePin(J1_MANCHE_2_PORT, J1_MANCHE_2_PIN, GPIO_PIN_SET);
     }
 
-    if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_2) == GPIO_PIN_SET)
+    if(HAL_GPIO_ReadPin(J2_BUTTON_PORT,J2_BUTTON_PIN) == GPIO_PIN_SET)
     {
       HAL_GPIO_WritePin(J2_MANCHE_1_PORT, J2_MANCHE_1_PIN, GPIO_PIN_RESET);
       HAL_GPIO_WritePin(J2_MANCHE_2_PORT, J2_MANCHE_2_PIN, GPIO_PIN_RESET);
@@ -210,8 +219,15 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PA0 PA1 PA4 */
-  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_4;
+  /*Configure GPIO pin : PA0 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PA1 PA4 */
+  GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_4;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -222,6 +238,18 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PA10 */
+  GPIO_InitStruct.Pin = GPIO_PIN_10;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PB3 */
+  GPIO_InitStruct.Pin = GPIO_PIN_3;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 }
