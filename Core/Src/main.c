@@ -58,6 +58,7 @@ static void MX_GPIO_Init(void);
 /* USER CODE BEGIN 0 */
 
 // LED INITIALIZATION
+// MANCHE WHITE LED
 GPIO_TypeDef *j1_manche_1_PORT = GPIOC;
 uint16_t j1_manche_1_PIN = GPIO_PIN_0;
 
@@ -70,12 +71,26 @@ uint16_t j2_manche_1_PIN = GPIO_PIN_1;
 GPIO_TypeDef *j2_manche_2_PORT = GPIOB;
 uint16_t j2_manche_2_PIN = GPIO_PIN_0;
 
+// PARTIE GREEN LED
+GPIO_TypeDef *j1_partie_1_PORT = GPIOA;
+uint16_t j1_partie_1_PIN = GPIO_PIN_1;
+
+GPIO_TypeDef *j1_partie_2_PORT = GPIOC;
+uint16_t j1_partie_2_PIN = GPIO_PIN_3;
+
+GPIO_TypeDef *j2_partie_1_PORT = GPIOC;
+uint16_t j2_partie_1_PIN = GPIO_PIN_2;
+
+GPIO_TypeDef *j2_partie_2_PORT = GPIOA;
+uint16_t j2_partie_2_PIN = GPIO_PIN_0;
+
 // BUTTON INITIALISATION
 GPIO_TypeDef *j1_button_PORT = GPIOB;
 uint16_t j1_button_PIN = GPIO_PIN_3;
 
 GPIO_TypeDef *j2_button_PORT = GPIOA;
 uint16_t j2_button_PIN = GPIO_PIN_10;
+
 
 
 /* USER CODE END 0 */
@@ -114,6 +129,11 @@ int main(void)
   GPIO_PinState j1_manche_2_STATUS = GPIO_PIN_RESET;
   GPIO_PinState j2_manche_1_STATUS = GPIO_PIN_RESET;
   GPIO_PinState j2_manche_2_STATUS = GPIO_PIN_RESET;
+
+  GPIO_PinState j1_partie_1_STATUS = GPIO_PIN_RESET;
+  GPIO_PinState j1_partie_2_STATUS = GPIO_PIN_RESET;
+  GPIO_PinState j2_partie_1_STATUS = GPIO_PIN_RESET;
+  GPIO_PinState j2_partie_2_STATUS = GPIO_PIN_RESET;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -127,34 +147,111 @@ int main(void)
     // CHECK BUTTON
     if(HAL_GPIO_ReadPin(j1_button_PORT,j1_button_PIN) == GPIO_PIN_RESET)
     {
-        if (j1_manche_1_STATUS == GPIO_PIN_SET)
+        // 1e PARTIE GAGNEE
+        if (j1_manche_2_STATUS == GPIO_PIN_SET)
         {
-            j1_manche_2_STATUS = GPIO_PIN_SET;
+            j1_manche_1_STATUS = GPIO_PIN_RESET;
+            j1_manche_2_STATUS = GPIO_PIN_RESET;
+            // 2e PARTIE GAGNEE
+            if (j1_partie_1_STATUS == GPIO_PIN_SET)
+            {
+
+                // 1er ROYALE GAGNEE
+                if (j1_partie_2_STATUS == GPIO_PIN_SET)
+                {
+                    j1_partie_1_STATUS = GPIO_PIN_RESET;
+                    j1_partie_2_STATUS = GPIO_PIN_RESET;
+                    // ACTIVE ROYALE BLUE
+                }
+                else
+                {
+                    // 2e PARTIE GAGNEE
+                    j1_partie_2_STATUS = GPIO_PIN_SET;
+                }
+            }
+            else
+            {
+                // 1e PARTIE GAGNEE
+                j1_partie_1_STATUS = GPIO_PIN_SET;
+            }
         }
         else
         {
-            j1_manche_1_STATUS = GPIO_PIN_SET;
+            // 2e MANCHE GAGNE
+            if (j1_manche_1_STATUS == GPIO_PIN_SET)
+            {
+                j1_manche_2_STATUS = GPIO_PIN_SET;
+            }
+            else
+            {
+                // 1e MANCHE GAGNE
+                j1_manche_1_STATUS = GPIO_PIN_SET;
+            }
         }
-
     }
 
     if(HAL_GPIO_ReadPin(j2_button_PORT,j2_button_PIN) == GPIO_PIN_RESET)
     {
-        if (j2_manche_1_STATUS == GPIO_PIN_SET)
+        // 1e PARTIE GAGNEE
+        if (j2_manche_2_STATUS == GPIO_PIN_SET)
         {
-            j2_manche_2_STATUS = GPIO_PIN_SET;
+            j2_manche_1_STATUS = GPIO_PIN_RESET;
+            j2_manche_2_STATUS = GPIO_PIN_RESET;
+            // 2e PARTIE GAGNEE
+            if (j2_partie_1_STATUS == GPIO_PIN_SET)
+            {
+
+                // 1er ROYALE GAGNEE
+                if (j2_partie_2_STATUS == GPIO_PIN_SET)
+                {
+                    j2_partie_1_STATUS = GPIO_PIN_RESET;
+                    j2_partie_2_STATUS = GPIO_PIN_RESET;
+                    // ACTIVE ROYALE BLUE
+                }
+                else
+                {
+                    // 2e PARTIE GAGNEE
+                    j2_partie_2_STATUS = GPIO_PIN_SET;
+                }
+            }
+            else
+            {
+                // 1e PARTIE GAGNEE
+                j2_partie_1_STATUS = GPIO_PIN_SET;
+            }
         }
         else
         {
-            j2_manche_1_STATUS = GPIO_PIN_SET;
+            // 2e MANCHE GAGNE
+            if (j2_manche_1_STATUS == GPIO_PIN_SET)
+            {
+                j2_manche_2_STATUS = GPIO_PIN_SET;
+            }
+            else
+            {
+                // 1e MANCHE GAGNE
+                j2_manche_1_STATUS = GPIO_PIN_SET;
+            }
         }
     }
 
     // LED UPDATE
+    // MANCHE
     HAL_GPIO_WritePin(j1_manche_1_PORT, j1_manche_1_PIN, j1_manche_1_STATUS);
     HAL_GPIO_WritePin(j1_manche_2_PORT, j1_manche_2_PIN, j1_manche_2_STATUS);
     HAL_GPIO_WritePin(j2_manche_1_PORT, j2_manche_1_PIN, j2_manche_1_STATUS);
     HAL_GPIO_WritePin(j2_manche_2_PORT, j2_manche_2_PIN, j2_manche_2_STATUS);
+
+    //PARTIE
+    HAL_GPIO_WritePin(j1_partie_1_PORT, j1_partie_1_PIN, j1_partie_1_STATUS);
+    HAL_GPIO_WritePin(j1_partie_2_PORT, j1_partie_2_PIN, j1_partie_2_STATUS);
+    HAL_GPIO_WritePin(j2_partie_1_PORT, j2_partie_1_PIN, j2_partie_1_STATUS);
+    HAL_GPIO_WritePin(j2_partie_2_PORT, j2_partie_2_PIN, j2_partie_2_STATUS);
+
+    // ROYALE
+
+    // DELAY TO AVOID MULTIPLE BUTTON INTERUPTION
+    for(int i=0; i<1000 ;i++) for(int j=0; j<500; j++) __NOP();
 
 
     /*
@@ -222,7 +319,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0|GPIO_PIN_1, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_4, GPIO_PIN_RESET);
@@ -236,8 +333,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PC0 PC1 */
-  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1;
+  /*Configure GPIO pins : PC0 PC1 PC2 PC3 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
