@@ -32,6 +32,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define J1      0
+#define J2      1
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -55,6 +57,27 @@ static void MX_GPIO_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+// LED INITIALIZATION
+GPIO_TypeDef *j1_manche_1_PORT = GPIOC;
+uint16_t j1_manche_1_PIN = GPIO_PIN_0;
+
+GPIO_TypeDef *j1_manche_2_PORT = GPIOA;
+uint16_t j1_manche_2_PIN = GPIO_PIN_4;
+
+GPIO_TypeDef *j2_manche_1_PORT = GPIOC;
+uint16_t j2_manche_1_PIN = GPIO_PIN_1;
+
+GPIO_TypeDef *j2_manche_2_PORT = GPIOB;
+uint16_t j2_manche_2_PIN = GPIO_PIN_0;
+
+// BUTTON INITIALISATION
+GPIO_TypeDef *j1_button_PORT = GPIOB;
+uint16_t j1_button_PIN = GPIO_PIN_3;
+
+GPIO_TypeDef *j2_button_PORT = GPIOA;
+uint16_t j2_button_PIN = GPIO_PIN_10;
+
+
 /* USER CODE END 0 */
 
 /**
@@ -64,26 +87,6 @@ static void MX_GPIO_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  // LED INITIALIZATION
-  GPIO_TypeDef *J1_MANCHE_1_PORT = GPIOC;
-  uint16_t J1_MANCHE_1_PIN = GPIO_PIN_0;
-
-  GPIO_TypeDef *J1_MANCHE_2_PORT = GPIOA;
-  uint16_t J1_MANCHE_2_PIN = GPIO_PIN_4;
-
-  GPIO_TypeDef *J2_MANCHE_1_PORT = GPIOC;
-  uint16_t J2_MANCHE_1_PIN = GPIO_PIN_1;
-
-  GPIO_TypeDef *J2_MANCHE_2_PORT = GPIOB;
-  uint16_t J2_MANCHE_2_PIN = GPIO_PIN_0;
-
-  // BUTTON INITIALISATION
-  GPIO_TypeDef *J1_BUTTON_PORT = GPIOB;
-  uint16_t J1_BUTTON_PIN = GPIO_PIN_3;
-
-  GPIO_TypeDef *J2_BUTTON_PORT = GPIOA;
-  uint16_t J2_BUTTON_PIN = GPIO_PIN_10;
-
 
   /* USER CODE END 1 */
 
@@ -106,7 +109,11 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-
+  // LED STATUS INITIALISATION
+  GPIO_PinState j1_manche_1_STATUS = GPIO_PIN_RESET;
+  GPIO_PinState j1_manche_2_STATUS = GPIO_PIN_RESET;
+  GPIO_PinState j2_manche_1_STATUS = GPIO_PIN_RESET;
+  GPIO_PinState j2_manche_2_STATUS = GPIO_PIN_RESET;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -117,29 +124,46 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
+    // CHECK BUTTON
+    if(HAL_GPIO_ReadPin(j1_button_PORT,j1_button_PIN) == GPIO_PIN_RESET)
+    {
+        if (j1_manche_1_STATUS == GPIO_PIN_SET)
+        {
+            j1_manche_2_STATUS = GPIO_PIN_SET;
+        }
+        else
+        {
+            j1_manche_1_STATUS = GPIO_PIN_SET;
+        }
 
-    
-    if(HAL_GPIO_ReadPin(J1_BUTTON_PORT,J1_BUTTON_PIN) == GPIO_PIN_SET)
-    {
-       HAL_GPIO_WritePin(J1_MANCHE_1_PORT, J1_MANCHE_1_PIN, GPIO_PIN_RESET);
-       HAL_GPIO_WritePin(J1_MANCHE_2_PORT, J1_MANCHE_2_PIN, GPIO_PIN_RESET);
-    }
-    else
-    {
-      HAL_GPIO_WritePin(J1_MANCHE_1_PORT, J1_MANCHE_1_PIN, GPIO_PIN_SET);
-      HAL_GPIO_WritePin(J1_MANCHE_2_PORT, J1_MANCHE_2_PIN, GPIO_PIN_SET);
     }
 
-    if(HAL_GPIO_ReadPin(J2_BUTTON_PORT,J2_BUTTON_PIN) == GPIO_PIN_SET)
+    if(HAL_GPIO_ReadPin(j2_button_PORT,j2_button_PIN) == GPIO_PIN_RESET)
     {
-      HAL_GPIO_WritePin(J2_MANCHE_1_PORT, J2_MANCHE_1_PIN, GPIO_PIN_RESET);
-      HAL_GPIO_WritePin(J2_MANCHE_2_PORT, J2_MANCHE_2_PIN, GPIO_PIN_RESET);
+        if (j2_manche_1_STATUS == GPIO_PIN_SET)
+        {
+            j2_manche_2_STATUS = GPIO_PIN_SET;
+        }
+        else
+        {
+            j2_manche_1_STATUS = GPIO_PIN_SET;
+        }
     }
-    else
-    {
-      HAL_GPIO_WritePin(J2_MANCHE_1_PORT, J2_MANCHE_1_PIN, GPIO_PIN_SET);
-      HAL_GPIO_WritePin(J2_MANCHE_2_PORT, J2_MANCHE_2_PIN, GPIO_PIN_SET);
-    }
+
+    // LED UPDATE
+    HAL_GPIO_WritePin(j1_manche_1_PORT, j1_manche_1_PIN, j1_manche_1_STATUS);
+    HAL_GPIO_WritePin(j1_manche_2_PORT, j1_manche_2_PIN, j1_manche_2_STATUS);
+    HAL_GPIO_WritePin(j2_manche_1_PORT, j2_manche_1_PIN, j2_manche_1_STATUS);
+    HAL_GPIO_WritePin(j2_manche_2_PORT, j2_manche_2_PIN, j2_manche_2_STATUS);
+
+
+    /*
+    HAL_GPIO_WritePin(j1_manche_1_PORT, j1_manche_1_PIN, j1_manche_1_STATUS);
+    HAL_GPIO_WritePin(j1_manche_2_PORT, j1_manche_2_PIN, j1_manche_2_STATUS);
+    HAL_GPIO_WritePin(j2_manche_1_PORT, j2_manche_1_PIN, j2_manche_1_STATUS);
+    HAL_GPIO_WritePin(j2_manche_2_PORT, j2_manche_2_PIN, j2_manche_2_STATUS);
+*/
+
   }
   /* USER CODE END 3 */
 }
