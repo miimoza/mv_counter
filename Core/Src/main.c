@@ -201,6 +201,8 @@ int main(void)
         {
             j1_manche_1_STATUS = GPIO_PIN_RESET;
             j1_manche_2_STATUS = GPIO_PIN_RESET;
+            j2_manche_1_STATUS = GPIO_PIN_RESET;
+            j2_manche_2_STATUS = GPIO_PIN_RESET;
             // 2e PARTIE GAGNEE
             if (j1_partie_1_STATUS == GPIO_PIN_SET)
             {
@@ -210,6 +212,8 @@ int main(void)
                 {
                     j1_partie_1_STATUS = GPIO_PIN_RESET;
                     j1_partie_2_STATUS = GPIO_PIN_RESET;
+                    j2_partie_1_STATUS = GPIO_PIN_RESET;
+                    j2_partie_2_STATUS = GPIO_PIN_RESET;
 
                     // 2e ROYALE GAGNEE
                     if (j1_royale_1_STATUS == GPIO_PIN_SET)
@@ -220,6 +224,8 @@ int main(void)
                             // MEGA WIN
                             j1_royale_1_STATUS = GPIO_PIN_RESET;
                             j1_royale_2_STATUS = GPIO_PIN_RESET;
+                            j2_royale_1_STATUS = GPIO_PIN_RESET;
+                            j2_royale_2_STATUS = GPIO_PIN_RESET;
                         }
                         else
                         {
@@ -267,6 +273,8 @@ int main(void)
         {
             j2_manche_1_STATUS = GPIO_PIN_RESET;
             j2_manche_2_STATUS = GPIO_PIN_RESET;
+            j1_manche_1_STATUS = GPIO_PIN_RESET;
+            j1_manche_2_STATUS = GPIO_PIN_RESET;
             // 2e PARTIE GAGNEE
             if (j2_partie_1_STATUS == GPIO_PIN_SET)
             {
@@ -276,6 +284,8 @@ int main(void)
                 {
                     j2_partie_1_STATUS = GPIO_PIN_RESET;
                     j2_partie_2_STATUS = GPIO_PIN_RESET;
+                    j1_partie_1_STATUS = GPIO_PIN_RESET;
+                    j1_partie_2_STATUS = GPIO_PIN_RESET;
 
                     // 2e ROYALE GAGNEE
                     if (j2_royale_1_STATUS == GPIO_PIN_SET)
@@ -286,6 +296,8 @@ int main(void)
                             // MEGA WIN
                             j2_royale_1_STATUS = GPIO_PIN_RESET;
                             j2_royale_2_STATUS = GPIO_PIN_RESET;
+                            j1_royale_1_STATUS = GPIO_PIN_RESET;
+                            j1_royale_2_STATUS = GPIO_PIN_RESET;
                         }
                         else
                         {
