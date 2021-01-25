@@ -84,13 +84,47 @@ uint16_t j2_partie_1_PIN = GPIO_PIN_2;
 GPIO_TypeDef *j2_partie_2_PORT = GPIOA;
 uint16_t j2_partie_2_PIN = GPIO_PIN_0;
 
+// ROYALE BLUE LED
+GPIO_TypeDef *j1_royale_1_PORT = GPIOA;
+uint16_t j1_royale_1_PIN = GPIO_PIN_10;
+
+GPIO_TypeDef *j1_royale_2_PORT = GPIOA;
+uint16_t j1_royale_2_PIN = GPIO_PIN_9;
+
+GPIO_TypeDef *j2_royale_1_PORT = GPIOB;
+uint16_t j2_royale_1_PIN = GPIO_PIN_3;
+
+GPIO_TypeDef *j2_royale_2_PORT = GPIOC;
+uint16_t j2_royale_2_PIN = GPIO_PIN_7;
+
+
 // BUTTON INITIALISATION
 GPIO_TypeDef *j1_button_PORT = GPIOB;
-uint16_t j1_button_PIN = GPIO_PIN_3;
+uint16_t j1_button_PIN = GPIO_PIN_5;
 
-GPIO_TypeDef *j2_button_PORT = GPIOA;
-uint16_t j2_button_PIN = GPIO_PIN_10;
+GPIO_TypeDef *j2_button_PORT = GPIOB;
+uint16_t j2_button_PIN = GPIO_PIN_4;
 
+void check_leds()
+{
+    // MANCHE
+    HAL_GPIO_WritePin(j1_manche_1_PORT, j1_manche_1_PIN, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(j1_manche_2_PORT, j1_manche_2_PIN, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(j2_manche_1_PORT, j2_manche_1_PIN, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(j2_manche_2_PORT, j2_manche_2_PIN, GPIO_PIN_SET);
+
+    //PARTIE
+    HAL_GPIO_WritePin(j1_partie_1_PORT, j1_partie_1_PIN, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(j1_partie_2_PORT, j1_partie_2_PIN, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(j2_partie_1_PORT, j2_partie_1_PIN, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(j2_partie_2_PORT, j2_partie_2_PIN, GPIO_PIN_SET);
+
+    //ROYALE
+    HAL_GPIO_WritePin(j1_royale_1_PORT, j1_royale_1_PIN, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(j1_royale_2_PORT, j1_royale_2_PIN, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(j2_royale_1_PORT, j2_royale_1_PIN, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(j2_royale_2_PORT, j2_royale_2_PIN, GPIO_PIN_SET);
+}
 
 
 /* USER CODE END 0 */
@@ -134,6 +168,17 @@ int main(void)
   GPIO_PinState j1_partie_2_STATUS = GPIO_PIN_RESET;
   GPIO_PinState j2_partie_1_STATUS = GPIO_PIN_RESET;
   GPIO_PinState j2_partie_2_STATUS = GPIO_PIN_RESET;
+
+  GPIO_PinState j1_royale_1_STATUS = GPIO_PIN_RESET;
+  GPIO_PinState j1_royale_2_STATUS = GPIO_PIN_RESET;
+  GPIO_PinState j2_royale_1_STATUS = GPIO_PIN_RESET;
+  GPIO_PinState j2_royale_2_STATUS = GPIO_PIN_RESET;
+
+  // CHECK LEDS
+  check_leds();
+  for(int i=0; i<10000 ;i++) for(int j=0; j<500; j++) __NOP();
+
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -143,6 +188,10 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+
+
+
+
 
     // CHECK BUTTON
     if(HAL_GPIO_ReadPin(j1_button_PORT,j1_button_PIN) == GPIO_PIN_RESET)
@@ -161,7 +210,28 @@ int main(void)
                 {
                     j1_partie_1_STATUS = GPIO_PIN_RESET;
                     j1_partie_2_STATUS = GPIO_PIN_RESET;
-                    // ACTIVE ROYALE BLUE
+
+                    // 2e ROYALE GAGNEE
+                    if (j1_royale_1_STATUS == GPIO_PIN_SET)
+                    {
+                        // WIN TOTAL
+                        if (j1_royale_2_STATUS == GPIO_PIN_SET)
+                        {
+                            // MEGA WIN
+                            j1_royale_1_STATUS = GPIO_PIN_RESET;
+                            j1_royale_2_STATUS = GPIO_PIN_RESET;
+                        }
+                        else
+                        {
+                            // 2e ROYALE GAGNEE
+                            j1_royale_2_STATUS = GPIO_PIN_SET;
+                        }
+                    }
+                    else
+                    {
+                        // 1e ROYALE GAGNEE
+                        j1_royale_1_STATUS = GPIO_PIN_SET;
+                    }
                 }
                 else
                 {
@@ -206,7 +276,28 @@ int main(void)
                 {
                     j2_partie_1_STATUS = GPIO_PIN_RESET;
                     j2_partie_2_STATUS = GPIO_PIN_RESET;
-                    // ACTIVE ROYALE BLUE
+
+                    // 2e ROYALE GAGNEE
+                    if (j2_royale_1_STATUS == GPIO_PIN_SET)
+                    {
+                        // WIN TOTAL
+                        if (j2_royale_2_STATUS == GPIO_PIN_SET)
+                        {
+                            // MEGA WIN
+                            j2_royale_1_STATUS = GPIO_PIN_RESET;
+                            j2_royale_2_STATUS = GPIO_PIN_RESET;
+                        }
+                        else
+                        {
+                            // 2e ROYALE GAGNEE
+                            j2_royale_2_STATUS = GPIO_PIN_SET;
+                        }
+                    }
+                    else
+                    {
+                        // 1e ROYALE GAGNEE
+                        j2_royale_1_STATUS = GPIO_PIN_SET;
+                    }
                 }
                 else
                 {
@@ -249,19 +340,17 @@ int main(void)
     HAL_GPIO_WritePin(j2_partie_2_PORT, j2_partie_2_PIN, j2_partie_2_STATUS);
 
     // ROYALE
+    HAL_GPIO_WritePin(j1_royale_1_PORT, j1_royale_1_PIN, j1_royale_1_STATUS);
+    HAL_GPIO_WritePin(j1_royale_2_PORT, j1_royale_2_PIN, j1_royale_2_STATUS);
+    HAL_GPIO_WritePin(j2_royale_1_PORT, j2_royale_1_PIN, j2_royale_1_STATUS);
+    HAL_GPIO_WritePin(j2_royale_2_PORT, j2_royale_2_PIN, j2_royale_2_STATUS);
 
     // DELAY TO AVOID MULTIPLE BUTTON INTERUPTION
     for(int i=0; i<1000 ;i++) for(int j=0; j<500; j++) __NOP();
 
 
-    /*
-    HAL_GPIO_WritePin(j1_manche_1_PORT, j1_manche_1_PIN, j1_manche_1_STATUS);
-    HAL_GPIO_WritePin(j1_manche_2_PORT, j1_manche_2_PIN, j1_manche_2_STATUS);
-    HAL_GPIO_WritePin(j2_manche_1_PORT, j2_manche_1_PIN, j2_manche_1_STATUS);
-    HAL_GPIO_WritePin(j2_manche_2_PORT, j2_manche_2_PIN, j2_manche_2_STATUS);
-*/
-
   }
+
   /* USER CODE END 3 */
 }
 
@@ -319,13 +408,15 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3
+                          |GPIO_PIN_7, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_4, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3
+                          |GPIO_PIN_4|GPIO_PIN_9|GPIO_PIN_10, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_3, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : PC13 */
   GPIO_InitStruct.Pin = GPIO_PIN_13;
@@ -333,42 +424,33 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PC0 PC1 PC2 PC3 */
-  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3;
+  /*Configure GPIO pins : PC0 PC1 PC2 PC3
+                           PC7 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3
+                          |GPIO_PIN_7;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : PA0 */
-  GPIO_InitStruct.Pin = GPIO_PIN_0;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : PA1 PA4 */
-  GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_4;
+  /*Configure GPIO pins : PA0 PA1 PA2 PA3
+                           PA4 PA9 PA10 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3
+                          |GPIO_PIN_4|GPIO_PIN_9|GPIO_PIN_10;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : PB0 */
-  GPIO_InitStruct.Pin = GPIO_PIN_0;
+  /*Configure GPIO pins : PB0 PB3 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_3;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : PA10 */
-  GPIO_InitStruct.Pin = GPIO_PIN_10;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : PB3 */
-  GPIO_InitStruct.Pin = GPIO_PIN_3;
+  /*Configure GPIO pins : PB4 PB5 */
+  GPIO_InitStruct.Pin = GPIO_PIN_4|GPIO_PIN_5;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
